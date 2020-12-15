@@ -1,9 +1,7 @@
 // SCRIPT FOR WEATHERBOARD
-
-
- 
-
-
+// TODO: Get website working and looking pretty
+// TODO: Add country search box
+// TODO: Add autocomplete feature if you have time
 
     // This is our API key. Add your own API key between the ""
     let APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
@@ -52,8 +50,8 @@ function populateToday(){
       
       
       let Kelvin = parseInt(response.main.temp);
-      let fah = (Kelvin - 273.15) * 1.8 + 32;
-      console.log(fah);
+      let celsius = Math.round(Kelvin - 273.15)
+      console.log(celsius);
 
       let cityEl = document.querySelector("#current-city")
       let tempEl = document.querySelector("#temp")
@@ -61,8 +59,8 @@ function populateToday(){
       let windEl = document.querySelector("#wind")
 
       cityEl.textContent = "City: " + response.name;
-      tempEl.textContent = "Temp: " + fah;
-      humidityEl.textContent = "Humidity: " + response.main.humidity;
+      tempEl.textContent = "Temp: " + celsius + " degrees celsius";
+      humidityEl.textContent = "Humidity: " + response.main.humidity ;
       windEl.textContent = "Wind: " + response.wind.speed;
 
 
@@ -88,3 +86,18 @@ function populate5day() {
 function updateHistory() {
 
 }
+    const where = encodeURIComponent(JSON.stringify({
+        "name": "Sydney"
+    }));
+
+    $.ajax({
+    url: 'https://parseapi.back4app.com/classes/Continentscountriescities_City?limit=10&keys=name,country&where='+ where,
+    method: "GET",
+    beforeSend: function(xhr){
+        xhr.setRequestHeader('X-Parse-Application-Id', '5bEnaOWskOiyQn1FGo4RFbJdXd92GYLBTViFxtrf');
+        xhr.setRequestHeader('X-Parse-REST-API-Key', 'Brf9VPmNDu9QTwhU7F8sIhz3W4xCC8XreI8DR9cU');
+    }
+    }).then(function(response){
+        console.log(response);
+    });
+

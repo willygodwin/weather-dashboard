@@ -22,3 +22,13 @@
   width: 80%;
   
   }
+
+.card-header {
+    background-color: #4dd0e180;
+    text-align: center;
+}
+
+.forecast {
+    display: flex;
+    justify-content: space-evenly;
+}
