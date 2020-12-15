@@ -1,16 +1,41 @@
 // SCRIPT FOR WEATHERBOARD
 
+
+ 
+
+
+
     // This is our API key. Add your own API key between the ""
-    var APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
+    let APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
 
     // Here we are building the URL we need to query the database
-    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=Bujumbura,Burundi&appid=" + APIKey;
+    let queryURL = "https://api.openweathermap.org/data/2.5/weather?q=Bujumbura,Burundi&appid=" + APIKey;
+
+    console.log(queryURL)
 
     
-    $("#add-city").on("click", function(event) { 
-        
+    $(".fa").on("click", function(event) { 
         event.preventDefault();
+        populateToday();
 
+    });
+
+    $('#city-input').keydown( function( event ) {
+        if ( event.which === 13 ) {
+            // Do something
+            // Disable sending the related form
+            event.preventDefault();
+            populateToday();
+            console.log("hi");
+            return false;
+            
+
+        }
+    });
+
+// TODO1: Fetch API key and input from search bar (Optional try make autocomplete search)
+
+function populateToday(){
         // Here we grab the text from the input box
         var city = $("#city-input").val();
 
@@ -30,22 +55,17 @@
       let fah = (Kelvin - 273.15) * 1.8 + 32;
       console.log(fah);
 
-      let cityEl = document.querySelector(".city")
-      let tempEl = document.querySelector(".temp")
-      let humidityEl = document.querySelector(".humidity")
-      let windEl = document.querySelector(".wind")
+      let cityEl = document.querySelector("#current-city")
+      let tempEl = document.querySelector("#temp")
+      let humidityEl = document.querySelector("#humidity")
+      let windEl = document.querySelector("#wind")
 
       cityEl.textContent = "City: " + response.name;
       tempEl.textContent = "Temp: " + fah;
       humidityEl.textContent = "Humidity: " + response.main.humidity;
       windEl.textContent = "Wind: " + response.wind.speed;
 
-      // Create CODE HERE to Log the queryURL
-      // Create CODE HERE to log the resulting object
-      // Create CODE HERE to calculate the temperature (converted from Kelvin)
-      // Create CODE HERE to transfer content to HTML
-      // Hint: To convert from Kelvin to Fahrenheit: F = (K - 273.15) * 1.80 + 32
-      // Create CODE HERE to dump the temperature content into HTML
+
 
     });
 
@@ -57,5 +77,14 @@
       cityEl.textContent = "City not found"
       
     });
+}
 
-  });
+// TODO2: Function to Populate 5 day forecast and todays weather
+function populate5day() {
+
+}
+
+// TODO3: Save latest search to list of recent searches
+function updateHistory() {
+
+}
