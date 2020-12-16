@@ -281,13 +281,16 @@ function fetchCountry(obj, value){
 }
 
 function checkExisting(value){
-    for ( let i = 0 ; i < 8 ; i++){
+    let i = 0;
+    while(!isGreatSuccess && i < 8){
         if (value === recentSearch[i]){
-            isGreatSuccess = false;
+            isGreatSuccess = true;
         }
         else{
-            isGreatSuccess = true; 
+            isGreatSuccess = false; 
         }
+        i++;
+    console.log(isGreatSuccess)
     }
 }
 
@@ -348,14 +351,17 @@ function populateToday(city, country){
         //Create Temp div
         let tempDiv = $("<div>");
         tempDiv.text("Temperature: " + celsius + " " + String.fromCharCode(176) + "C");
+        tempDiv.append($("<br>"));
         
         //Create Humidity div
         let humDiv = $("<div>");
         humDiv.text("Humidity: " + response.main.humidity + " %" );
+        humDiv.append($("<br>"));
         
         //Create Wind Div 
         let windDiv =  $("<div>");
         windDiv.text("Wind: " + response.wind.speed + " m/s");
+        windDiv.append($("<br>"));
 
         //Append to card body
         $(".current-weather").append(tempDiv);
@@ -363,8 +369,8 @@ function populateToday(city, country){
         $(".current-weather").append(windDiv);
         populateUV(response.coord.lat, response.coord.lon);
 
-        isGreatSuccess = true; 
-        console.log(isGreatSuccess);
+        // isGreatSuccess = true; 
+        // console.log(isGreatSuccess);
       
     });
 
@@ -380,8 +386,8 @@ function populateToday(city, country){
         cityElDiv.text("City not found");
         $(".current-city").append(cityElDiv);
             
-        isGreatSuccess = false;
-        console.log(isGreatSuccess);
+        // isGreatSuccess = false;
+        // console.log(isGreatSuccess);
     
       
     });
@@ -406,8 +412,8 @@ function populateUV(lat, lon) {
 
         $(".current-weather").append(uvDiv);
 
-        isGreatSuccess = true;
-        console.log(isGreatSuccess);
+        // isGreatSuccess = true;
+        // console.log(isGreatSuccess);
         
       });
 
@@ -417,19 +423,19 @@ function populateUV(lat, lon) {
     }).catch(function(error) { 
         console.log(error);
         
-        isGreatSuccess = false;
-        console.log(isGreatSuccess);
+        // isGreatSuccess = false;
+        // console.log(isGreatSuccess);
     });
 }
 
 // TODO3: Function to Populate 5 day forecast
-function populateForecast(city, country) {
+function populateForecast(city, country = "noval") {
     let URL = "";
 
     console.log(fetchCountry(countries, country))
 
     // Here we construct our URL
-    if (country === ""){
+    if (country === "noval"){
         URL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + APIKey;
     }
     if (country.length === 2){
@@ -461,7 +467,7 @@ function populateForecast(city, country) {
             colDiv.addClass("col-md-2");
 
             let cardDiv = $("<div>");
-            cardDiv.addClass("card")
+            cardDiv.addClass("card fiveFore")
 
             let cardBodyDiv = $("<div>");
             cardBodyDiv.addClass("card-body"); 
@@ -482,11 +488,11 @@ function populateForecast(city, country) {
             //Add temperature
             let tempDiv = $("<div>");
             let celsius = convertToCelsius(response.list[index].main.temp)
-            tempDiv.text("Temperature: " + celsius);
+            tempDiv.text("Temperature: " + celsius + String.fromCharCode(176) + "C");
 
             //Add Humidity
             let humDiv = $("<div>");
-            humDiv.text("Humidity: " + response.list[index].main.humidity);
+            humDiv.text("Humidity: " + response.list[index].main.humidity + " %");
 
 
             console.log(response.list[index].weather[0].icon)
@@ -504,8 +510,8 @@ function populateForecast(city, country) {
             index = index + 8;
 
         }
-        isGreatSuccess = true; 
-        console.log(isGreatSuccess);
+        // isGreatSuccess = true; 
+        // console.log(isGreatSuccess);
     });
 
     $.ajax({
@@ -514,8 +520,8 @@ function populateForecast(city, country) {
     }).catch(function(error) { 
         console.log(error)
         
-        isGreatSuccess = false;
-        console.log(isGreatSuccess);
+        // isGreatSuccess = false;
+        // console.log(isGreatSuccess);
     });
 }
 
@@ -533,21 +539,26 @@ function convertToCelsius(temp) {
 // TODO4: Save latest search to list of recent searches
 function updateHistory(city, country) {
 
+    console.log("country: " + country);
+
     let newCity; 
 
-    if (country === ""){
+    if (country === "undefined"){
         newCity = city;
     }
     if (country.length === 2){
        newCity = city + ", " + country;
     }
     else {   
-        newCity = city + ", " + fetchCountry(countries, country);
+        newCity = city // + ", " + fetchCountry(countries, country);
     }
 
-    checkExisting(newCity)
+    checkExisting(newCity);
+
+    console.log(isGreatSuccess);
+    console.log(newCity);
     
-    if(isGreatSuccess){
+    if(!isGreatSuccess){
     
         recentSearch.unshift(newCity)
         //Clear content of recent searches
@@ -572,12 +583,12 @@ function updateHistory(city, country) {
 
         localStorage.setItem("StoredCities", JSON.stringify(recentSearch));
     }
-    else {
-        return ;
+    else {    
     }
-
+    isGreatSuccess = false;
 }
 
+console.log(recentSearch)
 // All the interactive elements being coded below
 
 // populateToday(recentSearch[0], "");
@@ -607,6 +618,7 @@ $(".fa").on("click", function(event) {
     let country = $("#country-input").val();
     populateToday(city, country);
     populateForecast(city, country);
+    
     updateHistory(city, country);
 
 });
@@ -620,6 +632,7 @@ $('#city-input').keydown( function( event ) {
         let country = $("#country-input").val();
         populateToday(city, country);
         populateForecast(city, country);
+        
         updateHistory(city, country)
 
         return false;
