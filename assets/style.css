@@ -34,3 +34,19 @@
         display: flex;
         justify-content: center;
 }
+
+.btn{
+    /* color: #4dd0e1; */
+    background-color: #4dd0e13a;
+    color: black;
+    border-color: #ced4da;
+    margin-bottom: 10px;
+    
+}
+
+.btn:hover{
+    /* color: #4dd0e1; */
+    background-color: #4dd0e180;
+    
+    border-color: #ced4da;
+    

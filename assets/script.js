@@ -266,14 +266,11 @@ if (StoredCities !== null) {
     
   }
 
-    // This is our API key. Add your own API key between the ""
-    let APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
+// This is our API key. Add your own API key between the ""
+let APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
 
-    // Here we are building the URL we need to query the database
-    // let queryURL = "https://api.openweathermap.org/data/2.5/weather?q=Bujumbura,Burundi&appid=" + APIKey;
-
-    // console.log(queryURL)
-
+// Boolean to keep track of whether search is successful or not
+let isGreatSuccess = false; 
 
 
 // TODO1: Fetch API key and input from search bar (Optional try make autocomplete search)
@@ -305,64 +302,74 @@ function populateToday(city, country){
 
     // We then created an AJAX call
     $.ajax({
-      url: URL,
-      method: "GET"
+        url: URL,
+        method: "GET"
     }).then(function(response) {
-      console.log(URL);
-      console.log(response);
-      
-      
-    //   let Kelvin = parseInt(response.main.temp);
-      let celsius =  convertToCelsius(response.main.temp) //Math.round(Kelvin - 273.15)
-      console.log(celsius);
-    
+        console.log(URL);
+        console.log(response);
         
-        $(".current-city").text("")
-      // Create City Name Div
-      let cityElDiv = $("<h4>")
+        
+        //   let Kelvin = parseInt(response.main.temp);
+        let celsius =  convertToCelsius(response.main.temp) //Math.round(Kelvin - 273.15)
+        console.log(celsius);
+        
+            
+            $(".current-city").text("")
+        // Create City Name Div
+        let cityElDiv = $("<h4>")
 
-      //Getting current date from unix timestamp using moment.js
-      let date = moment.unix(response.dt).format("DD/MM/YYYY");
-      cityElDiv.text(response.name +", " + response.sys.country + " (" + date + ")"); 
-      
-      // Create weather Icon 
-      let iconurl = "http://openweathermap.org/img/w/" + response.weather[0].icon + ".png"
-      iconWeather = $("<img>");
-      iconWeather.attr("src", iconurl);
+        //Getting current date from unix timestamp using moment.js
+        let date = moment.unix(response.dt).format("DD/MM/YYYY");
+        cityElDiv.text(response.name +", " + response.sys.country + " (" + date + ")"); 
+        
+        // Create weather Icon 
+        let iconurl = "http://openweathermap.org/img/w/" + response.weather[0].icon + ".png"
+        iconWeather = $("<img>");
+        iconWeather.attr("src", iconurl);
 
-      //Append to card headers
-      $(cityElDiv).append(iconWeather);
-      $(".current-city").append(cityElDiv);
+        //Append to card headers
+        $(cityElDiv).append(iconWeather);
+        $(".current-city").append(cityElDiv);
 
-      //Clear card body
-      $(".current-weather").text("")
-      
-      //Create Temp div
-      let tempDiv = $("<div>");
-      tempDiv.text("Temperature: " + celsius + " " + String.fromCharCode(176) + "C");
-      
-      //Create Humidity div
-      let humDiv = $("<div>");
-      humDiv.text("Humidity: " + response.main.humidity + " %" );
-      
-      //Create Wind Div 
-      let windDiv =  $("<div>");
-      windDiv.text("Wind: " + response.wind.speed + " m/s");
+        //Clear card body
+        $(".current-weather").text("")
+        
+        //Create Temp div
+        let tempDiv = $("<div>");
+        tempDiv.text("Temperature: " + celsius + " " + String.fromCharCode(176) + "C");
+        
+        //Create Humidity div
+        let humDiv = $("<div>");
+        humDiv.text("Humidity: " + response.main.humidity + " %" );
+        
+        //Create Wind Div 
+        let windDiv =  $("<div>");
+        windDiv.text("Wind: " + response.wind.speed + " m/s");
 
-      //Append to card body
-      $(".current-weather").append(tempDiv);
-      $(".current-weather").append(humDiv);
-      $(".current-weather").append(windDiv);
-      populateUV(response.coord.lat, response.coord.lon);
+        //Append to card body
+        $(".current-weather").append(tempDiv);
+        $(".current-weather").append(humDiv);
+        $(".current-weather").append(windDiv);
+        populateUV(response.coord.lat, response.coord.lon);
+
+        isGreatSuccess = True; 
       
     });
 
     $.ajax({
-      url: URL,
-      method: "GET"
+        url: URL,
+        method: "GET"
     }).catch(function(error) { 
-      let cityEl = document.querySelector(".city")
-      cityEl.textContent = "City not found"
+        console.log(error)
+
+        $(".current-city").text("")
+        // Create City Name Div
+        let cityElDiv = $("<h4>")
+        cityElDiv.text("City not found");
+        $(".current-city").append(cityElDiv);
+            
+        isGreatSuccess = false;
+    
       
     });
 }
@@ -385,8 +392,19 @@ function populateUV(lat, lon) {
         uvDiv.text("UV Index: " + response.value);
 
         $(".current-weather").append(uvDiv);
+
+        isGreatSuccess = true;
         
       });
+
+    $.ajax({
+        url: URL,
+        method: "GET"
+    }).catch(function(error) { 
+        console.log(error);
+        
+        isGreatSuccess = false;
+    });
 }
 
 // TODO3: Function to Populate 5 day forecast
@@ -411,76 +429,85 @@ function populateForecast(city, country) {
 
         // We then created an AJAX call
     $.ajax({
-    url: URL,
-    method: "GET"
+        url: URL,
+        method: "GET"
     }).then(function(response) {
-    console.log(URL);
-    console.log(response);
+        console.log(URL);
+        console.log(response);
     
         
-    clearForecast($(".forecast"))
+        clearForecast($(".forecast"))
 
-      let index = 0
+        let index = 0
     
 
-      for (let i = 0; i < 5 ; i ++){
-        let colDiv = $("<div>"); 
-        colDiv.addClass("col-md-2");
+        for (let i = 0; i < 5 ; i ++){
+            let colDiv = $("<div>"); 
+            colDiv.addClass("col-md-2");
 
-        let cardDiv = $("<div>");
-        cardDiv.addClass("card")
+            let cardDiv = $("<div>");
+            cardDiv.addClass("card")
 
-        let cardBodyDiv = $("<div>");
-        cardBodyDiv.addClass("card-body"); 
+            let cardBodyDiv = $("<div>");
+            cardBodyDiv.addClass("card-body"); 
 
-        // Add Dates 
-        let dateDiv = $("<div>");
-        let date = moment.unix(response.list[index].dt).format("DD/MM/YYYY")
-        dateDiv.text(date); //response.list[index].dt_txt
+            // Add Dates 
+            let dateDiv = $("<div>");
+            let date = moment.unix(response.list[index].dt).format("DD/MM/YYYY")
+            dateDiv.text(date); //response.list[index].dt_txt
+            
+            //Add Weather icons
+            let iconDiv = $("<div>");
+            let iconWeather = $("<img>");
+            let iconurl = "http://openweathermap.org/img/w/" + response.list[index].weather[0].icon + ".png"
+            iconWeather.attr('src', iconurl);
+            iconWeather.attr("alt", "Weather Icon")
+            iconDiv.append(iconWeather)
+
+            //Add temperature
+            let tempDiv = $("<div>");
+            let celsius = convertToCelsius(response.list[index].main.temp)
+            tempDiv.text("Temperature: " + celsius);
+
+            //Add Humidity
+            let humDiv = $("<div>");
+            humDiv.text("Humidity: " + response.list[index].main.humidity);
+
+
+            console.log(response.list[index].weather[0].icon)
+
+            //Append divs to card body
+            cardBodyDiv.append(dateDiv);
+            cardBodyDiv.append(iconDiv);
+            cardBodyDiv.append(tempDiv);
+            cardBodyDiv.append(humDiv);
+            
+            cardDiv.append(cardBodyDiv);
+            colDiv.append(cardDiv);
+            $(".forecast").append(colDiv);
+            
+            index = index + 8;
+
+        }
+        isGreatSuccess = true; 
+    });
+
+    $.ajax({
+        url: URL,
+        method: "GET"
+    }).catch(function(error) { 
+        console.log(error)
         
-        //Add Weather icons
-        let iconDiv = $("<div>");
-        let iconWeather = $("<img>");
-        let iconurl = "http://openweathermap.org/img/w/" + response.list[index].weather[0].icon + ".png"
-        iconWeather.attr('src', iconurl);
-        iconWeather.attr("alt", "Weather Icon")
-        iconDiv.append(iconWeather)
-
-        //Add temperature
-        let tempDiv = $("<div>");
-        let celsius = convertToCelsius(response.list[index].main.temp)
-        tempDiv.text("Temperature: " + celsius);
-
-        //Add Humidity
-        let humDiv = $("<div>");
-        humDiv.text("Humidity: " + response.list[index].main.humidity);
-
-
-        console.log(response.list[index].weather[0].icon)
-
-        //Append divs to card body
-        cardBodyDiv.append(dateDiv);
-        cardBodyDiv.append(iconDiv);
-        cardBodyDiv.append(tempDiv);
-        cardBodyDiv.append(humDiv);
-        
-        cardDiv.append(cardBodyDiv);
-        colDiv.append(cardDiv);
-        $(".forecast").append(colDiv);
-        
-        index = index + 8;
-
-      }
-
-
-
+        isGreatSuccess = false;
     });
 }
 
+//Function to clear forecast HTML Elements prior to populating
 function clearForecast(input) {
     return input.text('')
 }
 
+//Function to convert Kelvin to Celsius
 function convertToCelsius(temp) {
     return Math.round(parseInt(temp) - 273.15);
 }
@@ -489,42 +516,51 @@ function convertToCelsius(temp) {
 // TODO4: Save latest search to list of recent searches
 function updateHistory(city, country) {
 
-    if (country === ""){
-        recentSearch.unshift(city);
-    }
-    if (country.length === 2){
-        recentSearch.unshift(city + ", " + country);
-    }
-    else {
-        console.log(country)
-        recentSearch.unshift(city + ", " + fetchCountry(countries, country));
-    }
-    
-    //Clear content of recent searches
-    $(".recent-search1").text("")
-    $(".recent-search2").text("")
-
-    //Populate first 4 
-    for (let i = 0 ; i < 8 ; i ++){
-        let button = $("<button>");
-        button.attr("type", "button");
-        button.attr("onclick", "this.blur();");
-        button.addClass("btn btn-secondary");
-        button.text(recentSearch[i]);
-
-        if (i < 4){
-            $(".recent-search1").append(button);
+    if(isGreatSuccess){
+        if (country === ""){
+            recentSearch.unshift(city);
+        }
+        if (country.length === 2){
+            recentSearch.unshift(city + ", " + country);
         }
         else {
-            $(".recent-search2").append(button);
+            console.log(country)
+            recentSearch.unshift(city + ", " + fetchCountry(countries, country));
         }
-    }
+    
+        //Clear content of recent searches
+        $(".recent-search1").text("")
+        $(".recent-search2").text("")
 
-    localStorage.setItem("StoredCities", JSON.stringify(recentSearch));
+        //Populate first 4 
+        for (let i = 0 ; i < 8 ; i ++){
+            let button = $("<button>");
+            button.attr("type", "button");
+            button.attr("onclick", "this.blur();");
+            button.addClass("btn btn-secondary");
+            button.text(recentSearch[i]);
+
+            if (i < 4){
+                $(".recent-search1").append(button);
+            }
+            else {
+                $(".recent-search2").append(button);
+            }
+        }
+
+        localStorage.setItem("StoredCities", JSON.stringify(recentSearch));
+    }
+    else {
+        return ;
+    }
 
 }
 
 // All the interactive elements being coded below
+
+populateToday(recentSearch[0], "");
+populateForecast(recentSearch[0], "");
+
 
 $(".recent-search1").on("click", function(event) { 
     event.preventDefault();
