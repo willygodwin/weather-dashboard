@@ -28,21 +28,32 @@
 
       <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
                         <h4>Search Parameters</h4>
                     </div>
                     <div class="card-body">
-                        <!-- Search form -->
-                        <form class="form-inline active-cyan-4">
-                            <input class="form-control" id="city-input" type="text" placeholder="Search for a city:"
-                            aria-label="Search">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                        </form>
-
-                        
-
+                        <div class="row search-forms">
+                            <!-- Search form -->
+                            <div class="col-md-5">
+                                
+                                    <input class="form-control" id="city-input" type="text" placeholder="Search for a city:"
+                                    aria-label="Search">
+                                    
+                            </div>  
+                            
+                            <div class="col-md-5">
+                                
+                                    <input class="form-control" id="country-input" type="text" placeholder="Search for a country:"
+                                    aria-label="Search">
+                                
+                            </div>
+                            <div class="col-md-2">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                            </div>
+                            
+                        </div>
                         <br>
                                 <div class="p-2">City 1</div>
                                 <div class="p-2">City 2</div>
@@ -50,12 +61,13 @@
                     </div>   
                 </div>
             </div>
-            <div class="col-md-8">
+            <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header current-city">
                         <h4 id="current-city">City Name</h4>
+                        
                     </div>
-                    <div class="card-body">
+                    <div class="card-body current-weather">
                         <div class="p-2" id="temp">Temperature:</div>
                         <div class="p-2" id="humidity">Humidity</div>
                         <div class="p-2" id="wind">Wind Speed</div>
