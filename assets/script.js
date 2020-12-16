@@ -1,6 +1,6 @@
 // SCRIPT FOR WEATHERBOARD
 // TODO: Get website working and looking pretty
-// TODO: Add country search box
+// TODO: Fix the dashboard so that it doesn't  show duplicates and so that it doesn't show fake searches
 // TODO: Add autocomplete feature if you have time
 
 const countries = {
@@ -280,6 +280,17 @@ function fetchCountry(obj, value){
     return Object.keys(obj).find(key => obj[key] === value);
 }
 
+function checkExisting(value){
+    for ( let i = 0 ; i < 8 ; i++){
+        if (value === recentSearch[i]){
+            isGreatSuccess = false;
+        }
+        else{
+            isGreatSuccess = true; 
+        }
+    }
+}
+
 function populateToday(city, country){
         let URL = "";
 
@@ -352,7 +363,8 @@ function populateToday(city, country){
         $(".current-weather").append(windDiv);
         populateUV(response.coord.lat, response.coord.lon);
 
-        isGreatSuccess = True; 
+        isGreatSuccess = true; 
+        console.log(isGreatSuccess);
       
     });
 
@@ -369,6 +381,7 @@ function populateToday(city, country){
         $(".current-city").append(cityElDiv);
             
         isGreatSuccess = false;
+        console.log(isGreatSuccess);
     
       
     });
@@ -394,6 +407,7 @@ function populateUV(lat, lon) {
         $(".current-weather").append(uvDiv);
 
         isGreatSuccess = true;
+        console.log(isGreatSuccess);
         
       });
 
@@ -404,6 +418,7 @@ function populateUV(lat, lon) {
         console.log(error);
         
         isGreatSuccess = false;
+        console.log(isGreatSuccess);
     });
 }
 
@@ -427,7 +442,7 @@ function populateForecast(city, country) {
 
     }
 
-        // We then created an AJAX call
+    // We then created an AJAX call
     $.ajax({
         url: URL,
         method: "GET"
@@ -490,6 +505,7 @@ function populateForecast(city, country) {
 
         }
         isGreatSuccess = true; 
+        console.log(isGreatSuccess);
     });
 
     $.ajax({
@@ -499,6 +515,7 @@ function populateForecast(city, country) {
         console.log(error)
         
         isGreatSuccess = false;
+        console.log(isGreatSuccess);
     });
 }
 
@@ -516,18 +533,23 @@ function convertToCelsius(temp) {
 // TODO4: Save latest search to list of recent searches
 function updateHistory(city, country) {
 
-    if(isGreatSuccess){
-        if (country === ""){
-            recentSearch.unshift(city);
-        }
-        if (country.length === 2){
-            recentSearch.unshift(city + ", " + country);
-        }
-        else {
-            console.log(country)
-            recentSearch.unshift(city + ", " + fetchCountry(countries, country));
-        }
+    let newCity; 
+
+    if (country === ""){
+        newCity = city;
+    }
+    if (country.length === 2){
+       newCity = city + ", " + country;
+    }
+    else {   
+        newCity = city + ", " + fetchCountry(countries, country);
+    }
+
+    checkExisting(newCity)
     
+    if(isGreatSuccess){
+    
+        recentSearch.unshift(newCity)
         //Clear content of recent searches
         $(".recent-search1").text("")
         $(".recent-search2").text("")
@@ -558,8 +580,8 @@ function updateHistory(city, country) {
 
 // All the interactive elements being coded below
 
-populateToday(recentSearch[0], "");
-populateForecast(recentSearch[0], "");
+// populateToday(recentSearch[0], "");
+// populateForecast(recentSearch[0], "");
 
 
 $(".recent-search1").on("click", function(event) { 
@@ -585,7 +607,7 @@ $(".fa").on("click", function(event) {
     let country = $("#country-input").val();
     populateToday(city, country);
     populateForecast(city, country);
-    updateHistory(city, country)
+    updateHistory(city, country);
 
 });
 
