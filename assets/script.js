@@ -256,6 +256,16 @@ AX	:	"Åland Islands"
 }
 
 
+let StoredCities = JSON.parse(localStorage.getItem("StoredCities"));
+
+if (StoredCities !== null) {
+    recentSearch = StoredCities;
+  } else {
+    // initialise array to store cities only requried on first ever creation
+    recentSearch = []; 
+    
+  }
+
     // This is our API key. Add your own API key between the ""
     let APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
 
@@ -264,41 +274,7 @@ AX	:	"Åland Islands"
 
     // console.log(queryURL)
 
-    
-    $(".fa").on("click", function(event) { 
-        event.preventDefault();
-        populateToday();
-        populateForecast();
 
-    });
-
-    $('#city-input').keydown( function( event ) {
-        if ( event.which === 13 ) {
-            // Do something
-            // Disable sending the related form
-            event.preventDefault();
-            populateToday();
-            populateForecast();
-            console.log("hi");
-            return false;
-            
-
-        }
-    });
-
-    $('#country-input').keydown( function( event ) {
-        if ( event.which === 13 ) {
-            // Do something
-            // Disable sending the related form
-            event.preventDefault();
-            populateToday();
-            populateForecast();
-            console.log("hi");
-            return false;
-            
-
-        }
-    });
 
 // TODO1: Fetch API key and input from search bar (Optional try make autocomplete search)
 
@@ -307,10 +283,7 @@ function fetchCountry(obj, value){
     return Object.keys(obj).find(key => obj[key] === value);
 }
 
-function populateToday(){
-        // Here we grab the text from the input box
-        let city = $("#city-input").val();
-        let country = $("#country-input").val();
+function populateToday(city, country){
         let URL = "";
 
         console.log(fetchCountry(countries, country))
@@ -328,8 +301,7 @@ function populateToday(){
             URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + fetchCountry(countries, country) + "&appid=" + APIKey;
 
         }
-        
-        
+           
 
     // We then created an AJAX call
     $.ajax({
@@ -350,11 +322,8 @@ function populateToday(){
       let cityElDiv = $("<h4>")
 
       //Getting current date from unix timestamp using moment.js
-      let date = moment.unix(response.dt).format("DD/MM/YYYY")
+      let date = moment.unix(response.dt).format("DD/MM/YYYY");
       cityElDiv.text(response.name +", " + response.sys.country + " (" + date + ")"); 
-
-
-
       
       // Create weather Icon 
       let iconurl = "http://openweathermap.org/img/w/" + response.weather[0].icon + ".png"
@@ -365,7 +334,6 @@ function populateToday(){
       $(cityElDiv).append(iconWeather);
       $(".current-city").append(cityElDiv);
 
-    
       //Clear card body
       $(".current-weather").text("")
       
@@ -381,22 +349,12 @@ function populateToday(){
       let windDiv =  $("<div>");
       windDiv.text("Wind: " + response.wind.speed + " m/s");
 
-      //Create UV Div 
-      let uvDiv =  $("<div>");
-      let UVindex = populateUV(response.coord.lat, response.coord.lon);
-      uvDiv.text("UV Index: " + UVindex );
-
       //Append to card body
       $(".current-weather").append(tempDiv);
       $(".current-weather").append(humDiv);
       $(".current-weather").append(windDiv);
-      $(".current-weather").append(uvDiv);
-
-
-
-
-
-
+      populateUV(response.coord.lat, response.coord.lon);
+      
     });
 
     $.ajax({
@@ -408,9 +366,11 @@ function populateToday(){
       
     });
 }
-function populateUV(lat, long) {
 
-    let URL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + long + "&appid=" + APIkey
+//TODO2: Populate the UV index from other API
+function populateUV(lat, lon) {
+
+    let URL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
 
     $.ajax({
         url: URL,
@@ -418,19 +378,19 @@ function populateUV(lat, long) {
       }).then(function(response) {
         console.log(URL);
         console.log(response);
+        console.log(response.value)
+
+        //Create UV Div 
+        let uvDiv =  $("<div>");
+        uvDiv.text("UV Index: " + response.value);
+
+        $(".current-weather").append(uvDiv);
         
-
-
-
       });
-
-
 }
 
-// TODO2: Function to Populate 5 day forecast and todays weather
-function populateForecast() {
-    let city = $("#city-input").val();
-    let country = $("#country-input").val();
+// TODO3: Function to Populate 5 day forecast
+function populateForecast(city, country) {
     let URL = "";
 
     console.log(fetchCountry(countries, country))
@@ -475,7 +435,8 @@ function populateForecast() {
 
         // Add Dates 
         let dateDiv = $("<div>");
-        dateDiv.text(response.list[index].dt_txt);
+        let date = moment.unix(response.list[index].dt).format("DD/MM/YYYY")
+        dateDiv.text(date); //response.list[index].dt_txt
         
         //Add Weather icons
         let iconDiv = $("<div>");
@@ -506,16 +467,12 @@ function populateForecast() {
         cardDiv.append(cardBodyDiv);
         colDiv.append(cardDiv);
         $(".forecast").append(colDiv);
-
-
         
         index = index + 8;
 
-
-
       }
 
-    // response.list[0].dt_txt;
+
 
     });
 }
@@ -527,10 +484,107 @@ function clearForecast(input) {
 function convertToCelsius(temp) {
     return Math.round(parseInt(temp) - 273.15);
 }
-// TODO3: Save latest search to list of recent searches
-function updateHistory() {
+
+
+// TODO4: Save latest search to list of recent searches
+function updateHistory(city, country) {
+
+    if (country === ""){
+        recentSearch.unshift(city);
+    }
+    if (country.length === 2){
+        recentSearch.unshift(city + ", " + country);
+    }
+    else {
+        console.log(country)
+        recentSearch.unshift(city + ", " + fetchCountry(countries, country));
+    }
+    
+    //Clear content of recent searches
+    $(".recent-search1").text("")
+    $(".recent-search2").text("")
+
+    //Populate first 4 
+    for (let i = 0 ; i < 8 ; i ++){
+        let button = $("<button>");
+        button.attr("type", "button");
+        button.attr("onclick", "this.blur();");
+        button.addClass("btn btn-secondary");
+        button.text(recentSearch[i]);
+
+        if (i < 4){
+            $(".recent-search1").append(button);
+        }
+        else {
+            $(".recent-search2").append(button);
+        }
+    }
+
+    localStorage.setItem("StoredCities", JSON.stringify(recentSearch));
 
 }
+
+// All the interactive elements being coded below
+
+$(".recent-search1").on("click", function(event) { 
+    event.preventDefault();
+
+    populateToday(event.target.textContent, "");
+    populateForecast(event.target.textContent, "");
+
+});
+
+$(".recent-search2").on("click", function(event) { 
+    event.preventDefault();
+
+    populateToday(event.target.textContent, "");
+    populateForecast(event.target.textContent, "");
+
+});
+
+    
+$(".fa").on("click", function(event) { 
+    event.preventDefault();
+    let city = $("#city-input").val();
+    let country = $("#country-input").val();
+    populateToday(city, country);
+    populateForecast(city, country);
+    updateHistory(city, country)
+
+});
+
+$('#city-input').keydown( function( event ) {
+    if ( event.which === 13 ) {
+        // Do something
+        // Disable sending the related form
+        event.preventDefault();
+        let city = $("#city-input").val();
+        let country = $("#country-input").val();
+        populateToday(city, country);
+        populateForecast(city, country);
+        updateHistory(city, country)
+
+        return false;
+        
+    }
+});
+
+$('#country-input').keydown( function( event ) {
+    if ( event.which === 13 ) {
+        // Do something
+        // Disable sending the related form
+        event.preventDefault();
+        let city = $("#city-input").val();
+        let country = $("#country-input").val();
+        populateToday(city, country);
+        populateForecast(city, country);
+        updateHistory(city, country)
+
+        return false;
+        
+
+    }
+});
 
 
     // const where = encodeURIComponent(JSON.stringify({
