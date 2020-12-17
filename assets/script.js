@@ -350,16 +350,19 @@ function populateToday(city, country){
         
         //Create Temp div
         let tempDiv = $("<div>");
+        tempDiv.addClass("todays-forecast");
         tempDiv.text("Temperature: " + celsius + " " + String.fromCharCode(176) + "C");
         tempDiv.append($("<br>"));
         
         //Create Humidity div
         let humDiv = $("<div>");
+        humDiv.addClass("todays-forecast");
         humDiv.text("Humidity: " + response.main.humidity + " %" );
         humDiv.append($("<br>"));
         
         //Create Wind Div 
         let windDiv =  $("<div>");
+        windDiv.addClass("todays-forecast");
         windDiv.text("Wind: " + response.wind.speed + " m/s");
         windDiv.append($("<br>"));
 
@@ -408,6 +411,7 @@ function populateUV(lat, lon) {
 
         //Create UV Div 
         let uvDiv =  $("<div>");
+        uvDiv.addClass("todays-forecast");
         uvDiv.text("UV Index: " + response.value);
 
         $(".current-weather").append(uvDiv);
@@ -474,12 +478,14 @@ function populateForecast(city, country = "noval") {
 
             // Add Dates 
             let dateDiv = $("<div>");
+            dateDiv.addClass("dates");
             let date = moment.unix(response.list[index].dt).format("DD/MM/YYYY")
             dateDiv.text(date); //response.list[index].dt_txt
             
             //Add Weather icons
             let iconDiv = $("<div>");
             let iconWeather = $("<img>");
+            iconWeather.addClass("icon")
             let iconurl = "http://openweathermap.org/img/w/" + response.list[index].weather[0].icon + ".png"
             iconWeather.attr('src', iconurl);
             iconWeather.attr("alt", "Weather Icon")
@@ -487,11 +493,13 @@ function populateForecast(city, country = "noval") {
 
             //Add temperature
             let tempDiv = $("<div>");
+            tempDiv.addClass("forecast-divs");
             let celsius = convertToCelsius(response.list[index].main.temp)
             tempDiv.text("Temperature: " + celsius + String.fromCharCode(176) + "C");
 
             //Add Humidity
             let humDiv = $("<div>");
+            humDiv.addClass("forecast-divs");
             humDiv.text("Humidity: " + response.list[index].main.humidity + " %");
 
 
@@ -588,6 +596,27 @@ function updateHistory(city, country) {
     isGreatSuccess = false;
 }
 
+function populateHistory() {
+    $(".recent-search1").text("")
+    $(".recent-search2").text("")
+
+    //Populate first 4 
+    for (let i = 0 ; i < 8 ; i ++){
+        let button = $("<button>");
+        button.attr("type", "button");
+        button.attr("onclick", "this.blur();");
+        button.addClass("btn btn-secondary");
+        button.text(recentSearch[i]);
+
+        if (i < 4){
+            $(".recent-search1").append(button);
+        }
+        else {
+            $(".recent-search2").append(button);
+        }
+    }
+}
+
 console.log(recentSearch)
 // All the interactive elements being coded below
 
@@ -656,6 +685,8 @@ $('#country-input').keydown( function( event ) {
 
     }
 });
+
+populateHistory();
 
 
     // const where = encodeURIComponent(JSON.stringify({

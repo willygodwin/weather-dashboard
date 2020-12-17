@@ -23,6 +23,11 @@
 .card-header {
     background-color: #4dd0e180;
     text-align: center;
+    height: 75px;
+}
+
+.main-cards {
+  height: 286px;
 }
 
 .forecast {
@@ -53,4 +58,36 @@
 
 .fiveFore{
     background-color: #4dd0e13a;
+}
+
+.todays-forecast{
+
+    margin: 20px;
+}
+
+.dates { 
+  font-weight: bold;
+  margin: 5px;
+  text-align: center;
+}
+
+.icon{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 40%;
+}
+
+h1 {
+  text-align: center;
+  background-color: #4dd0e180;
+}
+
+.forecast-divs{
+  margin: 5px;
+  text-align: center;
+}
+
+.headerfour {
+  margin-top: 10px;
 }
