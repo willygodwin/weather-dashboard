@@ -94,3 +94,19 @@ h1 {
 .headerfour {
   margin-top: 10px;
 }
+
+.green{
+  background-color: rgba(22, 197, 22, 0.596);
+}
+
+.orange {
+  background-color:  rgba(197, 121, 22, 0.596);
+}
+
+.red {
+  background-color:  rgba(197, 22, 22, 0.596);
+}
+
+.uv-span{
+  padding: 5px;
+}

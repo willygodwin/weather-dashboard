@@ -272,6 +272,7 @@ let APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
 // Boolean to keep track of whether search is successful or not
 let isGreatSuccess = false; 
 let isExisting = false; 
+let uvIndexGlobal; 
 
 // TODO1: Fetch API key and input from search bar (Optional try make autocomplete search)
 
@@ -412,10 +413,30 @@ function populateUV(lat, lon) {
         // console.log(response.value)
 
         //Create UV Div 
+        uvIndexGlobal = parseInt(response.value); 
         let uvDiv =  $("<div>");
+        let uvSpan = $("<span>");
+        uvSpan.addClass("uv-span")
         uvDiv.addClass("todays-forecast");
-        uvDiv.text("UV Index: " + response.value);
+        uvDiv.text("UV Index: ");
+        uvSpan.text(response.value);
 
+        debugger
+        console.log("UV index: " + uvIndexGlobal)
+        
+        if (uvIndexGlobal >= 10) {
+            uvSpan.attr("style", "background-color: rgba(197, 22, 22, 0.596)" );
+        }
+        else if (uvIndexGlobal >= 5 && uvIndexGlobal <= 10) {
+            uvSpan.attr("style", "background-color: rgba(197, 121, 22, 0.596)" );
+        }
+        else {
+            uvSpan.attr("style", "background-color: rgba(22, 197, 22, 0.596)" );   
+        }
+        
+        
+
+        uvDiv.append(uvSpan);
         $(".current-weather").append(uvDiv);
 
         // isGreatSuccess = true;
@@ -598,7 +619,7 @@ function updateHistory(city, country) {
     }
     isGreatSuccess = false;
     isExisting = false;
-    
+
     
 }
 
@@ -623,12 +644,8 @@ function populateHistory() {
     }
 }
 
-// console.log(recentSearch)
+
 // All the interactive elements being coded below
-
-// populateToday(recentSearch[0], "");
-// populateForecast(recentSearch[0], "");
-
 
 $(".recent-search1").on("click", function(event) { 
     event.preventDefault();
@@ -688,10 +705,11 @@ $('#country-input').keydown( function( event ) {
 
         return false;
         
-
     }
 });
 
+populateToday(recentSearch[0], "");
+populateForecast(recentSearch[0], "");
 populateHistory();
 
 
