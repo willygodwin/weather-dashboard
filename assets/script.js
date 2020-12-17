@@ -377,6 +377,7 @@ function populateToday(city, country){
         // console.log(error)
 
         $(".current-city").text("")
+        $(".current-weather").text("")
         // Create City Name Div
         let cityElDiv = $("<h4>")
         cityElDiv.text("City not found");
@@ -528,7 +529,7 @@ function populateForecast(city, country = "noval") {
         method: "GET"
     }).catch(function(error) { 
         console.log(error)
-        
+        clearForecast($(".forecast"))
     });
 }
 
