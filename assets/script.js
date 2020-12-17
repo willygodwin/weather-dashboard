@@ -650,8 +650,6 @@ $(".fa").on("click", function(event) {
     populateToday(city, country);
     populateForecast(city, country);
     
-
-
 });
 
 $('#city-input').keydown( function( event ) {
@@ -664,8 +662,6 @@ $('#city-input').keydown( function( event ) {
         populateToday(city, country);
         populateForecast(city, country);
         
-
-
         return false;
         
     }
@@ -681,9 +677,7 @@ $('#country-input').keydown( function( event ) {
         populateToday(city, country);
         populateForecast(city, country);
         
-
-        return false;
-        
+        return false;    
     }
 });
 
@@ -692,18 +686,5 @@ populateForecast(recentSearch[0], "");
 populateHistory();
 
 
-    // const where = encodeURIComponent(JSON.stringify({
-    //     "name": "Sydney"
-    // }));
 
-    // $.ajax({
-    // url: 'https://parseapi.back4app.com/classes/Continentscountriescities_City?limit=10&keys=name,country&where='+ where,
-    // method: "GET",
-    // beforeSend: function(xhr){
-    //     xhr.setRequestHeader('X-Parse-Application-Id', '5bEnaOWskOiyQn1FGo4RFbJdXd92GYLBTViFxtrf');
-    //     xhr.setRequestHeader('X-Parse-REST-API-Key', 'Brf9VPmNDu9QTwhU7F8sIhz3W4xCC8XreI8DR9cU');
-    // }
-    // }).then(function(response){
-    //     console.log(response);
-    // });
 
