@@ -9,7 +9,15 @@ Title bar -
 
 Search Card - 
 
+![Alt text](/assets/screenshots/search.JPG?raw=true "search")
+
 Current Weather Card - 
 
+![Alt text](/assets/screenshots/current.JPG?raw=true "current")
 
 5 Day Forecast Card - 
+
+![Alt text](/assets/screenshots/fiveday.JPG?raw=true "fiveday")
+
+
+URL to deployed website:
