@@ -1,5 +1,8 @@
 /* sTYLE FOR WEATHERBOARD */
-
+*{
+  font-family: DejaVu Sans Mono, monospace;
+  color: #5b6875;
+}
 
   .fa {
     color: #4dd0e1;
@@ -43,7 +46,7 @@
 .btn{
     /* color: #4dd0e1; */
     background-color: #4dd0e13a;
-    color: black;
+    color: #5b6875;
     border-color: #ced4da;
     margin-bottom: 10px;
     

@@ -271,7 +271,7 @@ let APIKey = "9d4c4c68cb8d17944cab0103a9ce0311";
 
 // Boolean to keep track of whether search is successful or not
 let isGreatSuccess = false; 
-
+let isExisting = false; 
 
 // TODO1: Fetch API key and input from search bar (Optional try make autocomplete search)
 
@@ -282,33 +282,33 @@ function fetchCountry(obj, value){
 
 function checkExisting(value){
     let i = 0;
-    while(!isGreatSuccess && i < 8){
+    while(!isExisting && i < 8){
         if (value === recentSearch[i]){
-            isGreatSuccess = true;
+            isExisting = true;
         }
         else{
-            isGreatSuccess = false; 
+            isExisting = false; 
         }
         i++;
-    console.log(isGreatSuccess)
+    console.log("isExsiting: " + isExisting)
     }
 }
 
 function populateToday(city, country){
         let URL = "";
 
-        console.log(fetchCountry(countries, country))
+        // console.log(fetchCountry(countries, country))
 
         // Here we construct our URL
         if (country === ""){
             URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
         }
         if (country.length === 2){
-            console.log(country)
+            // console.log(country)
             URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + country +  "&appid=" + APIKey;
         }
         else {
-            console.log(country)
+            // console.log(country)
             URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "," + fetchCountry(countries, country) + "&appid=" + APIKey;
 
         }
@@ -319,13 +319,13 @@ function populateToday(city, country){
         url: URL,
         method: "GET"
     }).then(function(response) {
-        console.log(URL);
-        console.log(response);
+        // console.log(URL);
+        // console.log(response);
         
         
         //   let Kelvin = parseInt(response.main.temp);
         let celsius =  convertToCelsius(response.main.temp) //Math.round(Kelvin - 273.15)
-        console.log(celsius);
+        // console.log(celsius);
         
             
             $(".current-city").text("")
@@ -372,7 +372,8 @@ function populateToday(city, country){
         $(".current-weather").append(windDiv);
         populateUV(response.coord.lat, response.coord.lon);
 
-        // isGreatSuccess = true; 
+        isGreatSuccess = true; 
+        updateHistory(city, country)
         // console.log(isGreatSuccess);
       
     });
@@ -381,7 +382,7 @@ function populateToday(city, country){
         url: URL,
         method: "GET"
     }).catch(function(error) { 
-        console.log(error)
+        // console.log(error)
 
         $(".current-city").text("")
         // Create City Name Div
@@ -389,7 +390,8 @@ function populateToday(city, country){
         cityElDiv.text("City not found");
         $(".current-city").append(cityElDiv);
             
-        // isGreatSuccess = false;
+        isGreatSuccess = false;
+        updateHistory()
         // console.log(isGreatSuccess);
     
       
@@ -405,9 +407,9 @@ function populateUV(lat, lon) {
         url: URL,
         method: "GET"
       }).then(function(response) {
-        console.log(URL);
-        console.log(response);
-        console.log(response.value)
+        // console.log(URL);
+        // console.log(response);
+        // console.log(response.value)
 
         //Create UV Div 
         let uvDiv =  $("<div>");
@@ -425,7 +427,7 @@ function populateUV(lat, lon) {
         url: URL,
         method: "GET"
     }).catch(function(error) { 
-        console.log(error);
+        // console.log(error);
         
         // isGreatSuccess = false;
         // console.log(isGreatSuccess);
@@ -436,18 +438,18 @@ function populateUV(lat, lon) {
 function populateForecast(city, country = "noval") {
     let URL = "";
 
-    console.log(fetchCountry(countries, country))
+    // console.log(fetchCountry(countries, country))
 
     // Here we construct our URL
     if (country === "noval"){
         URL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + APIKey;
     }
     if (country.length === 2){
-        console.log(country)
+        // console.log(country)
         URL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + country +  "&appid=" + APIKey;
     }
     else {
-        console.log(country)
+        // console.log(country)
         URL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "," + fetchCountry(countries, country) + "&appid=" + APIKey;
 
     }
@@ -457,8 +459,8 @@ function populateForecast(city, country = "noval") {
         url: URL,
         method: "GET"
     }).then(function(response) {
-        console.log(URL);
-        console.log(response);
+        // console.log(URL);
+        // console.log(response);
     
         
         clearForecast($(".forecast"))
@@ -526,7 +528,7 @@ function populateForecast(city, country = "noval") {
         url: URL,
         method: "GET"
     }).catch(function(error) { 
-        console.log(error)
+        // console.log(error)
         
         // isGreatSuccess = false;
         // console.log(isGreatSuccess);
@@ -547,7 +549,7 @@ function convertToCelsius(temp) {
 // TODO4: Save latest search to list of recent searches
 function updateHistory(city, country) {
 
-    console.log("country: " + country);
+    // console.log("country: " + country);
 
     let newCity; 
 
@@ -564,9 +566,10 @@ function updateHistory(city, country) {
     checkExisting(newCity);
 
     console.log(isGreatSuccess);
+    console.log(isExisting)
     console.log(newCity);
     
-    if(!isGreatSuccess){
+    if(!isExisting && isGreatSuccess){
     
         recentSearch.unshift(newCity)
         //Clear content of recent searches
@@ -594,6 +597,9 @@ function updateHistory(city, country) {
     else {    
     }
     isGreatSuccess = false;
+    isExisting = false;
+    
+    
 }
 
 function populateHistory() {
@@ -617,7 +623,7 @@ function populateHistory() {
     }
 }
 
-console.log(recentSearch)
+// console.log(recentSearch)
 // All the interactive elements being coded below
 
 // populateToday(recentSearch[0], "");
@@ -648,7 +654,7 @@ $(".fa").on("click", function(event) {
     populateToday(city, country);
     populateForecast(city, country);
     
-    updateHistory(city, country);
+
 
 });
 
@@ -662,7 +668,7 @@ $('#city-input').keydown( function( event ) {
         populateToday(city, country);
         populateForecast(city, country);
         
-        updateHistory(city, country)
+
 
         return false;
         
@@ -678,7 +684,7 @@ $('#country-input').keydown( function( event ) {
         let country = $("#country-input").val();
         populateToday(city, country);
         populateForecast(city, country);
-        updateHistory(city, country)
+        
 
         return false;
         
