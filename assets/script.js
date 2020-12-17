@@ -571,24 +571,7 @@ function updateHistory(city, country) {
     
         recentSearch.unshift(newCity)
         //Clear content of recent searches
-        $(".recent-search1").text("")
-        $(".recent-search2").text("")
-
-        //Populate recent search list 
-        for (let i = 0 ; i < 8 ; i ++){
-            let button = $("<button>");
-            button.attr("type", "button");
-            button.attr("onclick", "this.blur();");
-            button.addClass("btn btn-secondary");
-            button.text(recentSearch[i]);
-
-            if (i < 4){
-                $(".recent-search1").append(button);
-            }
-            else {
-                $(".recent-search2").append(button);
-            }
-        }
+        populateHistory();
 
         localStorage.setItem("StoredCities", JSON.stringify(recentSearch));
     }
@@ -636,8 +619,8 @@ function populateHistory() {
                 $(".recent-search2").append(button);
             }
         }
-            }
     }
+    
 }
 
 
