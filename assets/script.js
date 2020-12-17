@@ -603,20 +603,40 @@ function populateHistory() {
     $(".recent-search1").text("")
     $(".recent-search2").text("")
 
-    //Populate recent search list
-    for (let i = 0 ; i < 8 ; i ++){
-        let button = $("<button>");
-        button.attr("type", "button");
-        button.attr("onclick", "this.blur();");
-        button.addClass("btn btn-secondary");
-        button.text(recentSearch[i]);
+    if(recentSearch.length < 8){
+        //Populate recent search list
+        for (let i = 0 ; i < recentSearch.length ; i ++){
+            let button = $("<button>");
+            button.attr("type", "button");
+            button.attr("onclick", "this.blur();");
+            button.addClass("btn btn-secondary");
+            button.text(recentSearch[i]);
 
-        if (i < 4){
-            $(".recent-search1").append(button);
+            if (i < 4){
+                $(".recent-search1").append(button);
+            }
+            else {
+                $(".recent-search2").append(button);
+            }
         }
-        else {
-            $(".recent-search2").append(button);
+    }
+    else {
+        //Populate recent search list
+        for (let i = 0 ; i < 8 ; i ++){
+            let button = $("<button>");
+            button.attr("type", "button");
+            button.attr("onclick", "this.blur();");
+            button.addClass("btn btn-secondary");
+            button.text(recentSearch[i]);
+
+            if (i < 4){
+                $(".recent-search1").append(button);
+            }
+            else {
+                $(".recent-search2").append(button);
+            }
         }
+            }
     }
 }
 
