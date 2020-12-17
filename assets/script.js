@@ -1,6 +1,4 @@
-// SCRIPT FOR WEATHERBOARD
-// TODO: Get website working and looking pretty
-// TODO: Fix the dashboard so that it doesn't  show duplicates and so that it doesn't show fake searches
+
 // TODO: Add autocomplete feature if you have time
 
 const countries = {
@@ -298,8 +296,6 @@ function checkExisting(value){
 function populateToday(city, country){
         let URL = "";
 
-        // console.log(fetchCountry(countries, country))
-
         // Here we construct our URL
         if (country === ""){
             URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIKey;
@@ -320,16 +316,11 @@ function populateToday(city, country){
         url: URL,
         method: "GET"
     }).then(function(response) {
-        // console.log(URL);
-        // console.log(response);
         
-        
-        //   let Kelvin = parseInt(response.main.temp);
-        let celsius =  convertToCelsius(response.main.temp) //Math.round(Kelvin - 273.15)
-        // console.log(celsius);
+        let celsius =  convertToCelsius(response.main.temp) 
         
             
-            $(".current-city").text("")
+        $(".current-city").text("")
         // Create City Name Div
         let cityElDiv = $("<h4>")
 
@@ -352,7 +343,7 @@ function populateToday(city, country){
         //Create Temp div
         let tempDiv = $("<div>");
         tempDiv.addClass("todays-forecast");
-        tempDiv.text("Temperature: " + celsius + " " + String.fromCharCode(176) + "C");
+        tempDiv.text("Temperature: " + celsius + String.fromCharCode(176) + "C");
         tempDiv.append($("<br>"));
         
         //Create Humidity div
@@ -375,7 +366,7 @@ function populateToday(city, country){
 
         isGreatSuccess = true; 
         updateHistory(city, country)
-        // console.log(isGreatSuccess);
+        
       
     });
 
@@ -393,7 +384,7 @@ function populateToday(city, country){
             
         isGreatSuccess = false;
         updateHistory()
-        // console.log(isGreatSuccess);
+        
     
       
     });
@@ -408,9 +399,6 @@ function populateUV(lat, lon) {
         url: URL,
         method: "GET"
       }).then(function(response) {
-        // console.log(URL);
-        // console.log(response);
-        // console.log(response.value)
 
         //Create UV Div 
         uvIndexGlobal = parseInt(response.value); 
@@ -421,26 +409,24 @@ function populateUV(lat, lon) {
         uvDiv.text("UV Index: ");
         uvSpan.text(response.value);
 
-        debugger
-        console.log("UV index: " + uvIndexGlobal)
         
-        if (uvIndexGlobal >= 10) {
+        console.log("UV index: " + uvIndexGlobal)
+
+        //Add background colour to the UV index depending on the index 
+        if (uvIndexGlobal >= 8) {
             uvSpan.attr("style", "background-color: rgba(197, 22, 22, 0.596)" );
         }
-        else if (uvIndexGlobal >= 5 && uvIndexGlobal <= 10) {
+        else if (uvIndexGlobal >= 4 && uvIndexGlobal <= 8) {
             uvSpan.attr("style", "background-color: rgba(197, 121, 22, 0.596)" );
         }
         else {
             uvSpan.attr("style", "background-color: rgba(22, 197, 22, 0.596)" );   
         }
-        
-        
 
+        //Append the UVDIV to the current weather
         uvDiv.append(uvSpan);
         $(".current-weather").append(uvDiv);
 
-        // isGreatSuccess = true;
-        // console.log(isGreatSuccess);
         
       });
 
@@ -448,18 +434,14 @@ function populateUV(lat, lon) {
         url: URL,
         method: "GET"
     }).catch(function(error) { 
-        // console.log(error);
+        console.log(error);
         
-        // isGreatSuccess = false;
-        // console.log(isGreatSuccess);
     });
 }
 
 // TODO3: Function to Populate 5 day forecast
 function populateForecast(city, country = "noval") {
     let URL = "";
-
-    // console.log(fetchCountry(countries, country))
 
     // Here we construct our URL
     if (country === "noval"){
@@ -480,10 +462,7 @@ function populateForecast(city, country = "noval") {
         url: URL,
         method: "GET"
     }).then(function(response) {
-        // console.log(URL);
-        // console.log(response);
-    
-        
+      
         clearForecast($(".forecast"))
 
         let index = 0
@@ -503,7 +482,7 @@ function populateForecast(city, country = "noval") {
             let dateDiv = $("<div>");
             dateDiv.addClass("dates");
             let date = moment.unix(response.list[index].dt).format("DD/MM/YYYY")
-            dateDiv.text(date); //response.list[index].dt_txt
+            dateDiv.text(date); 
             
             //Add Weather icons
             let iconDiv = $("<div>");
@@ -541,18 +520,15 @@ function populateForecast(city, country = "noval") {
             index = index + 8;
 
         }
-        // isGreatSuccess = true; 
-        // console.log(isGreatSuccess);
+        
     });
 
     $.ajax({
         url: URL,
         method: "GET"
     }).catch(function(error) { 
-        // console.log(error)
+        console.log(error)
         
-        // isGreatSuccess = false;
-        // console.log(isGreatSuccess);
     });
 }
 
@@ -581,7 +557,7 @@ function updateHistory(city, country) {
        newCity = city + ", " + country;
     }
     else {   
-        newCity = city // + ", " + fetchCountry(countries, country);
+        newCity = city 
     }
 
     checkExisting(newCity);
@@ -597,7 +573,7 @@ function updateHistory(city, country) {
         $(".recent-search1").text("")
         $(".recent-search2").text("")
 
-        //Populate first 4 
+        //Populate recent search list 
         for (let i = 0 ; i < 8 ; i ++){
             let button = $("<button>");
             button.attr("type", "button");
@@ -620,14 +596,13 @@ function updateHistory(city, country) {
     isGreatSuccess = false;
     isExisting = false;
 
-    
 }
 
 function populateHistory() {
     $(".recent-search1").text("")
     $(".recent-search2").text("")
 
-    //Populate first 4 
+    //Populate recent search list
     for (let i = 0 ; i < 8 ; i ++){
         let button = $("<button>");
         button.attr("type", "button");
