@@ -329,7 +329,7 @@ function populateToday(city, country){
         cityElDiv.text(response.name +", " + response.sys.country + " (" + date + ")"); 
         
         // Create weather Icon 
-        let iconurl = "http://openweathermap.org/img/w/" + response.weather[0].icon + ".png"
+        let iconurl = "https://openweathermap.org/img/w/" + response.weather[0].icon + ".png"
         iconWeather = $("<img>");
         iconWeather.attr("src", iconurl);
 
@@ -394,7 +394,7 @@ function populateToday(city, country){
 //TODO2: Populate the UV index from other API
 function populateUV(lat, lon) {
 
-    let URL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
+    let URL = "https://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=" + APIKey;
 
     $.ajax({
         url: URL,
@@ -489,7 +489,7 @@ function populateForecast(city, country = "noval") {
             let iconDiv = $("<div>");
             let iconWeather = $("<img>");
             iconWeather.addClass("icon")
-            let iconurl = "http://openweathermap.org/img/w/" + response.list[index].weather[0].icon + ".png"
+            let iconurl = "https://openweathermap.org/img/w/" + response.list[index].weather[0].icon + ".png"
             iconWeather.attr('src', iconurl);
             iconWeather.attr("alt", "Weather Icon")
             iconDiv.append(iconWeather)
